@@ -26,7 +26,7 @@ env\Scripts\activate
 ```
 - 📁&nbsp;&nbsp;Masuk ke Folder
 ```bash
-cd INFORMATION-TECHNOLOGY-COMMUNITY
+cd API-MENU_BOOK
 ```
 - 📁&nbsp;&nbsp;Install requirements
 ```bash

@@ -49,22 +49,6 @@
           
         </ul>
         <hr>
-        <div class="dropdown">
-          <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-            <strong>{{user}}</strong>
-          </a>
-          <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-                        
-            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-              <li><hr class="dropdown-divider"></li>
-              <li>
-                <button type="submit" class="dropdown-item">Sign out</button>
-              </li>
-            </ul>
-          </form>
-        </div>
       </div>
       <div class="b-example-divider b-example-vr"></div>
 

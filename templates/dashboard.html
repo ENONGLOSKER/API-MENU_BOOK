@@ -63,7 +63,8 @@
                 Add Menu
               </button>
               <br>
-
+              
+              <!-- profile -->
               <div class="dropdown mt-3 me-5">
                 <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                   <strong class="text-dark mx-3">{{user}}</strong>
@@ -82,7 +83,7 @@
               </div>
            </div>
 
-            <!-- Modal -->
+            <!-- Modal input-->
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
@@ -117,6 +118,39 @@
                 </div>
               </div>
             </div>
+            
+            <!-- Modal Edit -->
+            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h1 class="modal-title fs-5" id="editModalLabel">Edit Menu</h1>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <form id="editMenuForm">
+                              {% csrf_token %}
+                              <input type="hidden" id="editMenuId" name="id">
+                              <div class="mb-3">
+                                  <input type="text" class="form-control" id="editName" name="name" placeholder="Nama Menu">
+                              </div>
+                              <div class="mb-3">
+                                  <input type="text" class="form-control" id="editPrice" name="price" placeholder="Harga Menu">
+                              </div>
+                              <div class="mb-3">
+                                  <input type="text" class="form-control" id="editRating" name="rating" placeholder="Rating Menu">
+                              </div>
+                              <div class="mb-3">
+                                  <input type="file" class="form-control" id="editImage" name="image" placeholder="Gambar Menu">
+                              </div>
+                              <button type="button" class="btn btn-primary" onclick="submitEditForm()">Submit</button>
+                          </form>
+                      </div>
+                      <div class="modal-footer">
+                      </div>
+                  </div>
+              </div>
+            </div>
 
           </div>
         </div>
@@ -148,7 +182,6 @@
     
     <script defer>
       
-
         function getMenu(){
           $.ajax({
               url: 'http://127.0.0.1:8000/api/menu/',
@@ -178,12 +211,13 @@
                             <td class=""><span>ratings ${menu.rating}⭐</span></td>
                             <td class="text-center">
                               <button class="btn btn-danger" onclick="deleteMenu(${menu.id})"><i class="bi bi-trash"></i></button>
-                              <button class="btn btn-warning"><i class="bi bi-pencil-square"></i></button>
+                              <button class="btn btn-warning" onclick="editMenu(${menu.id})"><i class="bi bi-pencil-square"></i></button>
                             </td>
                           </tr>`
                 menuContainer.append(card);
             });
         }
+        
         function submitForm() {
           var formData = new FormData(document.getElementById('addMenuForm'));
           $.ajax({
@@ -204,28 +238,70 @@
           });
         }
     
-        function deleteMenu(id) {
-            var confirmation = confirm("Apakah Anda yakin ingin menghapus menu ini?");
-            if (confirmation) {
-                var csrftoken = $("[name=csrfmiddlewaretoken]").val();
-
-                $.ajax({
-                    url: `http://127.0.0.1:8000/api/menu/${id}`,
-                    type: "DELETE",
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    },
-                    success: function(data) {
-                        console.log('Menu deleted successfully:', data);
-                        alert('Menu berhasil dihapus.');
-                        getMenu();
-                    },
-                    error: function(error) {
-                        console.error('Error deleting kategori:', error);
-                    }
-                });
+        function editMenu(id) {
+        $.ajax({
+            url: `http://127.0.0.1:8000/api/menu/${id}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $('#editMenuId').val(data.id);
+                $('#editName').val(data.name);
+                $('#editPrice').val(data.price);
+                $('#editRating').val(data.rating);
+                $('#editModal').modal('show');
+            },
+            error: function (error) {
+                console.log('Error:', error);
             }
+        });
+    }
+
+        function submitEditForm() {
+            var formData = new FormData(document.getElementById('editMenuForm'));
+            var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+            $.ajax({
+                url: `http://127.0.0.1:8000/api/menu/${$('#editMenuId').val()}/`,
+                type: 'PUT',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function(xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                },
+                success: function (data) {
+                    console.log('Menu edited successfully:', data);
+                    $('#editModal').modal('hide');
+                    getMenu();
+                    window.location.reload();
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
         }
+        
+        function deleteMenu(id) {
+                var confirmation = confirm("Apakah Anda yakin ingin menghapus menu ini?");
+                if (confirmation) {
+                    var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+
+                    $.ajax({
+                        url: `http://127.0.0.1:8000/api/menu/${id}`,
+                        type: "DELETE",
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        },
+                        success: function(data) {
+                            console.log('Menu deleted successfully:', data);
+                            alert('Menu berhasil dihapus.');
+                            getMenu();
+                        },
+                        error: function(error) {
+                            console.error('Error deleting kategori:', error);
+                        }
+                    });
+                }
+            }
 
 
       $(document).ready(function(){

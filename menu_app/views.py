@@ -1,11 +1,17 @@
 # menu/views.py
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from .models import Menu
 from .serializers import MenuSerializer
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt 
 @api_view(['GET', 'POST'])
+# @authentication_classes([BasicAuthentication])
+# @permission_classes([IsAuthenticated])
 def menu_list(request):
     if request.method == 'GET':
         menus = Menu.objects.all()
@@ -19,8 +25,10 @@ def menu_list(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@csrf_exempt 
 @api_view(['GET', 'PUT', 'DELETE'])
+# @authentication_classes([BasicAuthentication])
+# @permission_classes([IsAuthenticated])
 def menu_detail(request, pk):
     try:
         menu = Menu.objects.get(pk=pk)

@@ -24,9 +24,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('menu_app.urls')),
     path('', views.index, name='index'),
+    path('detail/', views.detail, name='detail'),
     path('login_form/', views.login_form, name='login'),
     path('user_logout/', views.user_logout, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('dashboard/order/', views.dashboard_order, name='dashboard_order'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

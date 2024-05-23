@@ -4,10 +4,16 @@ from django.contrib.auth.decorators import login_required
 
 def index(request):
     return render(request, 'index.html')
+def detail(request):
+    return render(request, 'detail.html')
 
 @login_required
 def dashboard(request):
     return render(request, 'dashboard.html')
+
+@login_required
+def dashboard_order(request):
+    return render(request, 'dashboard_order.html')
 
 def login_form(request):
     if request.method == 'POST':
